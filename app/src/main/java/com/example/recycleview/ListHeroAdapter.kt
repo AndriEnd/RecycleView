@@ -8,34 +8,35 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 class ListHeroAdapter(private val listHero: ArrayList<Hero>) : RecyclerView.Adapter<ListHeroAdapter.ListViewHolder>(){
-    private lateinit var onItemClickCallback: OnItemClickCallback
+    private var onItemClickCallback: OnItemClickCallback? = null
 
     fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
         this.onItemClickCallback = onItemClickCallback
     }
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-        val (name: String, description, photo) = listHero[position]
+        val (name, description, photo) = listHero[position]
         holder.imgPhoto.setImageResource(photo)
         holder.tvName.text = name
         holder.tvDescription.text = description
 
-        holder.itemView.setOnClickListener { onItemClickCallback.onItemClicked(listHero[holder.adapterPosition]) }
+        holder.itemView.setOnClickListener {
+            onItemClickCallback?.onItemClicked(listHero[holder.adapterPosition])
+        }
     }
-
+// Memfilter layout item dari recycleView
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
-        TODO("Not yet implemented")
+        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_row_hero, parent, false)
+        return ListViewHolder(view)
     }
 
     override fun getItemCount(): Int = listHero.size
-
     class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imgPhoto: ImageView = itemView.findViewById(R.id.img_item_photo)
         val tvName: TextView = itemView.findViewById(R.id.tv_item_name)
         val tvDescription: TextView = itemView.findViewById(R.id.tv_item_description)
 
     }
-
     interface OnItemClickCallback {
         fun onItemClicked(data: Hero)
     }
